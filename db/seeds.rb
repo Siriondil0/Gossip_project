@@ -36,10 +36,11 @@ end
   pm = Pm.create!(content: Faker::Lorem.paragraph, sender: sender, date: Time.now) 
   if rand(1..2) == 1
     rec = User.offset(rand(User.count)).first
-    pm.user_ids = rand(User.first.id..User.last.id)
+    rec.pm_ids = pm.id
   else
     rand(1..10).times do
-      pm.user_ids = rand(User.first.id..User.last.id)
+      rec = User.offset(rand(User.count)).first
+      rec.pm_ids = pm.id
     end
   end
 end
@@ -49,18 +50,18 @@ i=0
   if i==0
     use = User.offset(rand(User.count)).first
     gos = Gossip.offset(rand(Gossip.count)).first
-    comment = gos.comments.create!(body: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
+    comment = gos.comments.create!(content: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
     i+=1
   else
     i=rand(1..2)
     if i ==1
       use = User.offset(rand(User.count)).first
       gos = Gossip.offset(rand(Gossip.count)).first
-      comment = gos.comments.create!(body: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
+      comment = gos.comments.create!(content: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
     else
       use = User.offset(rand(User.count)).first
       com = Comment.offset(rand(Comment.count)).first
-      comment = com.comments.create!(body: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
+      comment = com.comments.create!(content: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
     end
   end
 end
@@ -70,10 +71,10 @@ end
   if i ==1
     use = User.offset(rand(User.count)).first
     gos = Gossip.offset(rand(Gossip.count)).first
-    comment = gos.like.create!(user: use)
+    comment = gos.likes.create!(user: use)
   else
     use = User.offset(rand(User.count)).first
     com = Comment.offset(rand(Comment.count)).first
-    comment = com.like.create!(user: use)
+    comment = com.likes.create!(user: use)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_25_151332) do
+ActiveRecord::Schema.define(version: 2018_10_25_155428) do
 
   create_table "cities", force: :cascade do |t|
     t.string "name"
@@ -44,23 +44,17 @@ ActiveRecord::Schema.define(version: 2018_10_25_151332) do
     t.integer "gossip_id", null: false
     t.integer "tag_id", null: false
     t.index ["gossip_id", "tag_id"], name: "index_gossips_tags_on_gossip_id_and_tag_id"
+    t.index ["tag_id", "gossip_id"], name: "index_gossips_tags_on_tag_id_and_gossip_id"
   end
 
   create_table "likes", force: :cascade do |t|
-    t.string "commentable_type"
-    t.integer "commentable_id"
+    t.string "likable_type"
+    t.integer "likable_id"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["commentable_type", "commentable_id"], name: "index_likes_on_commentable_type_and_commentable_id"
-  end
-
-  create_table "messages", force: :cascade do |t|
-    t.integer "sender_id"
-    t.text "content"
-    t.datetime "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sender_id"], name: "index_messages_on_sender_id"
+    t.index ["likable_type", "likable_id"], name: "index_likes_on_likable_type_and_likable_id"
+    t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
   create_table "pms", force: :cascade do |t|
@@ -70,12 +64,6 @@ ActiveRecord::Schema.define(version: 2018_10_25_151332) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["sender_id"], name: "index_pms_on_sender_id"
-  end
-
-  create_table "pms_recipients", id: false, force: :cascade do |t|
-    t.integer "pm_id", null: false
-    t.integer "recipient_id", null: false
-    t.index ["pm_id", "recipient_id"], name: "index_pms_recipients_on_pm_id_and_recipient_id"
   end
 
   create_table "pms_users", id: false, force: :cascade do |t|
