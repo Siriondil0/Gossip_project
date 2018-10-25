@@ -9,24 +9,71 @@
 require 'faker'
 
 10.times do
-  user = User.create!(first_name: Faker::Name.first_name, last_name: Faker::Name.last_name  , email: Faker::Internet.email, age: rand(88),)
-end
-5.times do
-  category = Category.create!(name: Faker::LordOfTheRings.location)
-end
-10.times do
-  use = User.offset(rand(User.count)).first
-  cat = Category.offset(rand(Category.count)).first
-  article = Article.create!(title: Faker::LordOfTheRings.character, content: Faker::Lorem.paragraph, user: use, category: cat)
+  city = City.create!(name: Faker::Address.city, postal_code: Faker::Address.postcode)
 end
 
 15.times do
-  use = User.offset(rand(User.count)).first
-  art = Article.offset(rand(Article.count)).first
-  comment = Comment.create!(content: Faker::Lorem.paragraph, user: use, article: art) 
+  city = City.offset(rand(City.count)).first
+  user = User.create!(first_name: Faker::Name.first_name, last_name: Faker::Name.last_name  , email: Faker::Internet.email, age: rand(88), description: Faker::FamousLastWords.last_words, city_id: city.id)
 end
-15.times do
+
+25.times do
   use = User.offset(rand(User.count)).first
-  art = Article.offset(rand(Article.count)).first
-  like = Like.create!(user: use, article: art)
+  gossip = Gossip.create!(title: Faker::LordOfTheRings.character, content: Faker::Lorem.paragraph, user: use, date: Time.now)
+end
+
+10.times do
+  tag = Tag.create!(tag: Faker::StarWars.planet)
+  tag.gossip_ids = rand(Gossip.first.id..Gossip.last.id)
+end
+
+Gossip.all.each do |gossip|
+  gossip.tag_ids = rand(Tag.first.id..Tag.last.id)
+end
+
+3.times do
+  sender = User.offset(rand(User.count)).first
+  pm = Pm.create!(content: Faker::Lorem.paragraph, sender: sender, date: Time.now) 
+  if rand(1..2) == 1
+    rec = User.offset(rand(User.count)).first
+    pm.user_ids = rand(User.first.id..User.last.id)
+  else
+    rand(1..10).times do
+      pm.user_ids = rand(User.first.id..User.last.id)
+    end
+  end
+end
+
+i=0
+30.times do
+  if i==0
+    use = User.offset(rand(User.count)).first
+    gos = Gossip.offset(rand(Gossip.count)).first
+    comment = gos.comments.create!(body: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
+    i+=1
+  else
+    i=rand(1..2)
+    if i ==1
+      use = User.offset(rand(User.count)).first
+      gos = Gossip.offset(rand(Gossip.count)).first
+      comment = gos.comments.create!(body: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
+    else
+      use = User.offset(rand(User.count)).first
+      com = Comment.offset(rand(Comment.count)).first
+      comment = com.comments.create!(body: Faker::HitchhikersGuideToTheGalaxy.quote, user: use)
+    end
+  end
+end
+
+20.times do
+  i=rand(1..2)
+  if i ==1
+    use = User.offset(rand(User.count)).first
+    gos = Gossip.offset(rand(Gossip.count)).first
+    comment = gos.like.create!(user: use)
+  else
+    use = User.offset(rand(User.count)).first
+    com = Comment.offset(rand(Comment.count)).first
+    comment = com.like.create!(user: use)
+  end
 end
